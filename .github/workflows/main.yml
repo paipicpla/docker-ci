@@ -1,0 +1,48 @@
+name: Build and Push Docker image
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: yourusername/yourrepositoryname:latest
+        build-args: |
+          SOME_ARG=SOME_VALUE
+
+    - name: Build and push with tags
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: |
+          yourusername/yourrepositoryname:${{ github.ref_name }}
+          yourusername/yourrepositoryname:latest
+        build-args: |
+          SOME_ARG=SOME_VALUE
