@@ -3,9 +3,9 @@ name: Build and Push Docker image
 on:
   push:
     branches:
-      - main
+      - 'master'
     tags:
-      - 'v*'
+      - '**'
 
 jobs:
   build-and-push:
@@ -30,7 +30,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: yourusername/yourrepositoryname:latest
+        tags: camorra/nodejs-ci:latest
         build-args: |
           SOME_ARG=SOME_VALUE
 
@@ -42,7 +42,7 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          yourusername/yourrepositoryname:${{ github.ref_name }}
-          yourusername/yourrepositoryname:latest
+          camorra/nodejs-ci:${{ github.ref_name }}
+          camorra/nodejs-ci:latest
         build-args: |
           SOME_ARG=SOME_VALUE
